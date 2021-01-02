@@ -1,0 +1,50 @@
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  username: String
+  firstName: String
+  lastName: String
+  fullName: String
+  token: String!
+  createdAt: Date!
+}
+
+# inputs definitions
+input RegisterInput {
+  email: String!
+  password: String!
+  confirmPassword: String!
+  username: String
+  first_name: String
+  last_name: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input ChangePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
+}
+
+input PersonnalInfoInput {
+  username: String
+  firstName: String
+  lastName: String
+}
+
+type Query {
+  users: [User!]
+}
+
+type Mutation {
+  # users mutations
+  register(userInput: RegisterInput!): User!
+  login(userInput: LoginInput!): User!
+  changePassword(userInput: ChangePasswordInput!): User!
+  updateInfo(optionnalInfoInput: PersonnalInfoInput!): User!
+}
