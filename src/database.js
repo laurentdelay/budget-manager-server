@@ -7,11 +7,8 @@ const startDatabase = async () => {
   await mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
 };
 
-const stopDatabase = async () => {
-  await mongoose.disconnect();
-};
-
-module.exports = { startDatabase, stopDatabase };
+module.exports = { startDatabase };
