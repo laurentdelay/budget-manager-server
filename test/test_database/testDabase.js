@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const User = require("../../src/models/user.model");
 const { hashPassword } = require("../../src/utils/password");
+const { generateToken } = require("../../src/utils/token");
 
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/budget-manager";
@@ -34,4 +35,12 @@ const stopDatabase = async () => {
   await mongoose.disconnect();
 };
 
-module.exports = { startDatabase, stopDatabase };
+const getTestToken = () => {
+  return generateToken({
+    id: "testuserid",
+    email: "test@mail.com",
+    createdAt: new Date(),
+  });
+};
+
+module.exports = { startDatabase, stopDatabase, getTestToken };

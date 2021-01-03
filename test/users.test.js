@@ -1,7 +1,13 @@
 const { expect } = require("chai");
 const request = require("supertest");
-const { startDatabase, stopDatabase } = require("./test_database/testDabase");
+const {
+  startDatabase,
+  stopDatabase,
+  getTestToken,
+} = require("./test_database/testDabase");
 const app = require("../src/server");
+
+const testToken = getTestToken();
 
 beforeEach(async () => {
   await startDatabase();
@@ -325,205 +331,140 @@ describe("Users resolvers", () => {
     });
 
     it("should throw an error if old password is not provided", (done) => {
-      const email = "test@mail.com";
-      const password = "password";
+      const oldPassword = "";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
 
       request(app)
         .post("/graphql")
-        // récupération d'un token valide
+        .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { login(userInput: {email: "${email}", password:"${password}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
-        .then((res) => {
-          const token = res.body.data.login.token;
+        .end((err, res) => {
+          if (err) done(new Error(err));
 
-          const oldPassword = "";
-          const newPassword = "newPassword";
-          const confirmNewPassword = "newPassword";
+          const retrievedError = res.body.errors[0];
+          const errorDetails = retrievedError.extensions.errors;
 
-          request(app)
-            .post("/graphql")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-              query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
-            })
-            .end((err, res) => {
-              if (err) done(new Error(err));
-
-              const retrievedError = res.body.errors[0];
-              const errorDetails = retrievedError.extensions.errors;
-
-              expect(res.status, "Error Code").to.be.equal(500);
-              expect(retrievedError, "Retrieved an Input error")
-                .to.have.property("message")
-                .equal("Input error");
-              expect(
-                errorDetails,
-                "Old password missing"
-              ).to.exist.and.have.property("oldPassword");
-              done();
-            });
+          expect(res.status, "Error Code").to.be.equal(500);
+          expect(retrievedError, "Retrieved an Input error")
+            .to.have.property("message")
+            .equal("Input error");
+          expect(
+            errorDetails,
+            "Old password missing"
+          ).to.exist.and.have.property("oldPassword");
+          done();
         });
     });
 
     it("should throw an error if new password is not provided", (done) => {
-      const email = "test@mail.com";
-      const password = "password";
+      const oldPassword = "password";
+      const newPassword = "";
+      const confirmNewPassword = "newPassword";
 
       request(app)
         .post("/graphql")
-        // récupération d'un token valide
+        .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { login(userInput: {email: "${email}", password:"${password}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
-        .then((res) => {
-          const token = res.body.data.login.token;
+        .end((err, res) => {
+          if (err) done(new Error(err));
 
-          const oldPassword = "password";
-          const newPassword = "";
-          const confirmNewPassword = "newPassword";
+          const retrievedError = res.body.errors[0];
+          const errorDetails = retrievedError.extensions.errors;
 
-          request(app)
-            .post("/graphql")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-              query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
-            })
-            .end((err, res) => {
-              if (err) done(new Error(err));
-
-              const retrievedError = res.body.errors[0];
-              const errorDetails = retrievedError.extensions.errors;
-
-              expect(res.status, "Error Code").to.be.equal(500);
-              expect(retrievedError, "Retrieved an Input error")
-                .to.have.property("message")
-                .equal("Input error");
-              expect(
-                errorDetails,
-                "New password missing"
-              ).to.exist.and.have.property("newPassword");
-              done();
-            });
+          expect(res.status, "Error Code").to.be.equal(500);
+          expect(retrievedError, "Retrieved an Input error")
+            .to.have.property("message")
+            .equal("Input error");
+          expect(
+            errorDetails,
+            "New password missing"
+          ).to.exist.and.have.property("newPassword");
+          done();
         });
     });
 
     it("should throw an error if new passwords are different", (done) => {
-      const email = "test@mail.com";
-      const password = "password";
+      const oldPassword = "password";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "differentPassword";
 
       request(app)
         .post("/graphql")
-        // récupération d'un token valide
+        .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { login(userInput: {email: "${email}", password:"${password}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
-        .then((res) => {
-          const token = res.body.data.login.token;
+        .end((err, res) => {
+          if (err) done(new Error(err));
 
-          const oldPassword = "password";
-          const newPassword = "newPassword";
-          const confirmNewPassword = "differentPassword";
+          const retrievedError = res.body.errors[0];
+          const errorDetails = retrievedError.extensions.errors;
 
-          request(app)
-            .post("/graphql")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-              query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
-            })
-            .end((err, res) => {
-              if (err) done(new Error(err));
-
-              const retrievedError = res.body.errors[0];
-              const errorDetails = retrievedError.extensions.errors;
-
-              expect(res.status, "Error Code").to.be.equal(500);
-              expect(retrievedError, "Retrieved an Input error")
-                .to.have.property("message")
-                .equal("Input error");
-              expect(
-                errorDetails,
-                "New passwords different"
-              ).to.exist.and.have.property("confirmNewPassword");
-              done();
-            });
+          expect(res.status, "Error Code").to.be.equal(500);
+          expect(retrievedError, "Retrieved an Input error")
+            .to.have.property("message")
+            .equal("Input error");
+          expect(
+            errorDetails,
+            "New passwords different"
+          ).to.exist.and.have.property("confirmNewPassword");
+          done();
         });
     });
 
     it("should throw an error if old password does not match", (done) => {
-      const email = "test@mail.com";
-      const password = "password";
+      const oldPassword = "wrongOldPassword";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
 
       request(app)
         .post("/graphql")
-        // récupération d'un token valide
+        .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { login(userInput: {email: "${email}", password:"${password}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
-        .then((res) => {
-          const token = res.body.data.login.token;
+        .end((err, res) => {
+          if (err) done(new Error(err));
 
-          const oldPassword = "wrongOldPassword";
-          const newPassword = "newPassword";
-          const confirmNewPassword = "newPassword";
+          const retrievedError = res.body.errors[0];
+          const errorDetails = retrievedError.extensions.errors;
 
-          request(app)
-            .post("/graphql")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-              query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
-            })
-            .end((err, res) => {
-              if (err) done(new Error(err));
-
-              const retrievedError = res.body.errors[0];
-              const errorDetails = retrievedError.extensions.errors;
-
-              expect(res.status, "Error Code").to.be.equal(500);
-              expect(retrievedError, "Retrieved an Input error")
-                .to.have.property("message")
-                .equal("Wrong password");
-              expect(
-                errorDetails,
-                "Password not matching"
-              ).to.exist.and.have.property("password");
-              done();
-            });
+          expect(res.status, "Error Code").to.be.equal(500);
+          expect(retrievedError, "Retrieved an Input error")
+            .to.have.property("message")
+            .equal("Wrong password");
+          expect(
+            errorDetails,
+            "Password not matching"
+          ).to.exist.and.have.property("password");
+          done();
         });
     });
 
     it("should return a user with a token", (done) => {
-      const email = "test@mail.com";
-      const password = "password";
+      const oldPassword = "password";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
 
       request(app)
         .post("/graphql")
-        // récupération d'un token valide
+        .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { login(userInput: {email: "${email}", password:"${password}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { token } }`,
         })
-        .then((res) => {
-          const token = res.body.data.login.token;
+        .end((err, res) => {
+          if (err) done(new Error(err));
 
-          const oldPassword = "password";
-          const newPassword = "newPassword";
-          const confirmNewPassword = "newPassword";
+          const { token } = res.body.data.changePassword;
 
-          request(app)
-            .post("/graphql")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-              query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { token } }`,
-            })
-            .end((err, res) => {
-              if (err) done(new Error(err));
-
-              const { token } = res.body.data.changePassword;
-
-              expect(res.status, "Error Code").to.be.equal(200);
-              expect(token, "Retrieved a token").to.exist.and.be.a("string");
-              done();
-            });
+          expect(res.status, "Error Code").to.be.equal(200);
+          expect(token, "Retrieved a token").to.exist.and.be.a("string");
+          done();
         });
     });
   });
