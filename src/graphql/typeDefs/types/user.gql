@@ -16,8 +16,8 @@ input RegisterInput {
   password: String!
   confirmPassword: String!
   username: String
-  first_name: String
-  last_name: String
+  firstName: String = ""
+  lastName: String
 }
 
 input LoginInput {
@@ -46,5 +46,5 @@ type Mutation {
   register(userInput: RegisterInput!): User!
   login(userInput: LoginInput!): User!
   changePassword(userInput: ChangePasswordInput!): User!
-  updateInfo(optionnalInfoInput: PersonnalInfoInput!): User!
+  updateInfo(userInput: PersonnalInfoInput!): User!
 }

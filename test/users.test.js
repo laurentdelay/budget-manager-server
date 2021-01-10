@@ -455,7 +455,7 @@ describe("Users resolvers", () => {
         .post("/graphql")
         .set("Authorization", `Bearer ${testToken}`)
         .send({
-          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { token } }`,
+          query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { token password } }`,
         })
         .end((err, res) => {
           if (err) done(new Error(err));
@@ -469,5 +469,50 @@ describe("Users resolvers", () => {
     });
   });
 
-  /* describe("update info", () => {}); */
+  describe("update info", () => {
+    it("should throw an error if user is not logged in", (done) => {
+      const username = "Superman";
+      const firstName = "Clark";
+      const lastName = "Kent";
+
+      request(app)
+        .post("/graphql")
+        .send({
+          query: `mutation { updateInfo(userInput: {username: "${username}", firstName:"${firstName}", lastName:"${lastName}"}) { id } }`,
+        })
+        .end((err, res) => {
+          if (err) done(new Error(err));
+
+          const errorCode = res.body.errors[0].extensions.code;
+          expect(res.status, "Error Code").to.be.equal(500);
+          expect(errorCode, "Auth required").to.exist.and.be.equal(
+            "UNAUTHENTICATED"
+          );
+          done();
+        });
+    });
+
+    it("should return a user with updated info", (done) => {
+      const usernameInput = "Superman";
+      const firstNameInput = "Clark";
+      const lastNameInput = "Kent";
+
+      request(app)
+        .post("/graphql")
+        .set("Authorization", `Bearer ${testToken}`)
+        .send({
+          query: `mutation { updateInfo(userInput: {username: "${usernameInput}", firstName:"${firstNameInput}", lastName:"${lastNameInput}"}) { id username firstName lastName} }`,
+        })
+        .end((err, res) => {
+          if (err) done(new Error(err));
+
+          const { username, firstName, lastName } = res.body.data.updateInfo;
+
+          expect(username).to.exist.and.be.equal(usernameInput);
+          expect(firstName).to.exist.and.be.equal(firstNameInput);
+          expect(lastName).to.exist.and.be.equal(lastNameInput);
+          done();
+        });
+    });
+  });
 });

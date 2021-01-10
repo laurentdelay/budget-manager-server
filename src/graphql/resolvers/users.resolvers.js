@@ -10,7 +10,19 @@ const {
 } = require("../../utils/validators");
 
 const usersResolvers = {
+  User: {
+    // mise à jour auto du nom complet lors d'un changement
+    fullName: (parent) => {
+      const { firstName, lastName } = parent;
+      return `${firstName}${firstName ? " " : ""}${lastName}`;
+    },
+  },
   Mutation: {
+    /**
+     *
+     *  création de compte
+     *
+     */
     async register(
       _,
       {
@@ -53,14 +65,13 @@ const usersResolvers = {
       username = username.trim();
 
       password = await hashPassword(password, 12);
-      let fullName = `${firstName}${firstName ? " " : ""}${lastName}`;
+
       const newUser = new User({
         email,
         password,
         username,
         firstName,
         lastName,
-        fullName,
         createdAt: new Date(),
       });
 
@@ -73,6 +84,11 @@ const usersResolvers = {
       }
     },
 
+    /**
+     *
+     *  connexion
+     *
+     */
     async login(_, { userInput: { email, password } }) {
       // validation des données
       const { errors, valid } = validateLoginInput(email, password);
@@ -81,8 +97,10 @@ const usersResolvers = {
         throw new UserInputError("Input error", { errors });
       }
 
+      // récupération de l'uilisateur
       const user = await User.findOne({ email });
 
+      // on vérifie qu'il existe
       if (!user) {
         throw new UserInputError("Wrong email", {
           errors: { email: "L'utilisateur n'existe pas" },
@@ -102,17 +120,24 @@ const usersResolvers = {
       return { ...user._doc, id: user._id, token };
     },
 
+    /**
+     *
+     *  changement de mot de passe
+     *
+     */
     async changePassword(
       _,
       { userInput: { oldPassword, newPassword, confirmNewPassword } },
       context
     ) {
+      // on vérifie que l'utilisateur est connecté
       const loggedUser = checkAuth(context);
 
       if (!loggedUser) {
         throw new AuthenticationError("Vous devez être connecté.");
       }
 
+      // on vérifie que la saisie est conforme
       const { valid, errors } = validateChangePasswordInput(
         oldPassword,
         newPassword,
@@ -145,7 +170,44 @@ const usersResolvers = {
 
       const token = generateToken(user);
 
-      return { ...user._doc, id: user._id, token };
+      return { ...user._doc, id: user._id, token, password: newPassword };
+    },
+
+    /**
+     *
+     *  changement des informations utilisateur
+     *
+     */
+    async updateInfo(
+      _,
+      { userInput: { username, firstName, lastName } },
+      context
+    ) {
+      const loggedUser = checkAuth(context);
+
+      if (!loggedUser) {
+        throw new AuthenticationError("Vous devez être connecté.");
+      }
+
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { email: loggedUser.email },
+          { username, firstName, lastName }
+        );
+
+        const token = generateToken(updatedUser);
+
+        return {
+          ...updatedUser._doc,
+          token,
+          id: updatedUser._id,
+          username,
+          firstName,
+          lastName,
+        };
+      } catch (error) {
+        throw new Error();
+      }
     },
   },
 };
