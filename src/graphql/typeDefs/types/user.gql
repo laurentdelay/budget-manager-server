@@ -37,10 +37,6 @@ input PersonnalInfoInput {
   lastName: String
 }
 
-type Query {
-  users: [User!]
-}
-
 type Mutation {
   # users mutations
   register(userInput: RegisterInput!): User!

@@ -1,5 +1,7 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
+const expressPlayground = require("graphql-playground-middleware-express")
+  .default;
 
 const schema = require("./graphql/schema");
 
@@ -9,8 +11,9 @@ app.use(
   "/graphql",
   graphqlHTTP({
     schema,
-    graphiql: true,
   })
 );
+
+app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
 
 module.exports = app;

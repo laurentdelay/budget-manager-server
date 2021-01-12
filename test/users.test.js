@@ -9,15 +9,15 @@ const app = require("../src/server");
 
 const testToken = getTestToken();
 
-beforeEach(async () => {
-  await startDatabase();
-});
-
-afterEach(async () => {
-  await stopDatabase();
-});
-
 describe("Users resolvers", () => {
+  beforeEach(async () => {
+    await startDatabase();
+  });
+
+  afterEach(async () => {
+    await stopDatabase("users");
+  });
+
   describe("register", () => {
     it("should throw an error if email is missing", (done) => {
       request(app)
@@ -280,7 +280,6 @@ describe("Users resolvers", () => {
         })
         .end((err, res) => {
           if (err) done(new Error(err));
-
           const { token } = res.body.data.login;
           expect(res.status, "Status code").to.be.equal(200);
           expect(token, "Returned token").to.exist.and.be.a("string");
