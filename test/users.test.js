@@ -3,19 +3,22 @@ const request = require("supertest");
 const {
   startDatabase,
   stopDatabase,
-  getTestToken,
+  header,
+  resetCollections,
 } = require("./test_database/testDabase");
 const app = require("../src/server");
 
-const testToken = getTestToken();
-
 describe("Users resolvers", () => {
-  beforeEach(async () => {
+  before(async () => {
     await startDatabase();
   });
 
   afterEach(async () => {
-    await stopDatabase("users");
+    await resetCollections("users");
+  });
+
+  after(async () => {
+    await stopDatabase();
   });
 
   describe("register", () => {
@@ -28,7 +31,6 @@ describe("Users resolvers", () => {
         })
         .end((err, res) => {
           if (err) done(new Error(err));
-
           const retrievedError = res.body.errors[0];
           const errorDetails = retrievedError.extensions.errors;
 
@@ -336,7 +338,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
@@ -365,7 +367,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
@@ -394,7 +396,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
@@ -423,7 +425,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { id } }`,
         })
@@ -452,7 +454,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { changePassword(userInput: {oldPassword: "${oldPassword}", newPassword:"${newPassword}", confirmNewPassword:"${confirmNewPassword}"}) { token password } }`,
         })
@@ -498,7 +500,7 @@ describe("Users resolvers", () => {
 
       request(app)
         .post("/graphql")
-        .set("Authorization", `Bearer ${testToken}`)
+        .set("Authorization", header.Authorization)
         .send({
           query: `mutation { updateInfo(userInput: {username: "${usernameInput}", firstName:"${firstNameInput}", lastName:"${lastNameInput}"}) { id username firstName lastName} }`,
         })

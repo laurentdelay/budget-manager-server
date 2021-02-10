@@ -1,0 +1,21 @@
+type Category {
+  id: ID!
+  name: String!
+  action: Positivity!
+  user: ID
+}
+
+input categoryInfo {
+  name: String!
+  action: Positivity!
+}
+
+type Query {
+  # renvoie une liste de catégories liées à un utilisateur et les catégories par défaut
+  categories: [Category]!
+}
+
+type Mutation {
+  newCategory(userInput: categoryInfo): Category!
+  removeCategory(categoryId: ID!): String!
+}

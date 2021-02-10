@@ -1,5 +1,6 @@
 const categoriesResolvers = require("./categories.resolvers");
 const usersResolvers = require("./users.resolvers");
+const operationsResolvers = require("./operations.resolvers");
 
 const resolvers = {
   User: {
@@ -7,10 +8,12 @@ const resolvers = {
   },
   Query: {
     ...categoriesResolvers.Query,
+    ...operationsResolvers.Query,
   },
   Mutation: {
     ...usersResolvers.Mutation,
     ...categoriesResolvers.Mutation,
+    ...operationsResolvers.Mutation,
   },
 };
 

@@ -5,18 +5,21 @@ const app = require("../src/server");
 const {
   startDatabase,
   stopDatabase,
-  getTestToken,
+  header,
+  resetCollections,
 } = require("./test_database/testDabase");
 
-const testToken = getTestToken();
-
-describe("operations resolvers", () => {
-  beforeEach(async () => {
+describe("Operations resolvers", () => {
+  before(async () => {
     await startDatabase();
   });
 
   afterEach(async () => {
-    await stopDatabase("operations");
+    await resetCollections("operations");
+  });
+
+  after(async () => {
+    await stopDatabase();
   });
 
   describe("Query", () => {

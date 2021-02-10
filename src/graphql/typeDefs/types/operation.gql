@@ -6,7 +6,7 @@ type Operation {
   repeat: Boolean!
   goal: String
   category: ID!
-  type: String!
+  positive: Boolean!
 }
 
 type Query {

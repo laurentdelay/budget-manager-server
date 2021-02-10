@@ -1,1 +1,7 @@
 scalar Date
+
+enum Positivity {
+  POSITIVE
+  NEGATIVE
+  CHOICE
+}
