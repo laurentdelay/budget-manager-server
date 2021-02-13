@@ -1,18 +1,19 @@
-const { UserInputError, AuthenticationError } = require("apollo-server-errors");
+import { UserInputError, AuthenticationError } from "apollo-server";
+import { IUser } from "../../interfaces/user.interface";
 
-const User = require("../../models/user.model");
-const { checkPassword, hashPassword } = require("../../utils/password");
-const { generateToken, checkAuth } = require("../../utils/token");
-const {
+import User from "../../models/user.model";
+import { checkPassword, hashPassword } from "../../utils/password";
+import { generateToken, checkAuth } from "../../utils/token";
+import {
   validateRegisterInput,
   validateLoginInput,
   validateChangePasswordInput,
-} = require("../../utils/validators");
+} from "../../utils/validators";
 
 const usersResolvers = {
   User: {
     // mise à jour auto du nom complet lors d'un changement
-    fullName: (parent) => {
+    fullName: (parent: IUser) => {
       const { firstName, lastName } = parent;
       return `${firstName}${firstName ? " " : ""}${lastName}`;
     },
@@ -64,7 +65,7 @@ const usersResolvers = {
       lastName = lastName.trim();
       username = username.trim();
 
-      password = await hashPassword(password, 12);
+      password = await hashPassword(password);
 
       const newUser = new User({
         email,
@@ -212,4 +213,4 @@ const usersResolvers = {
   },
 };
 
-module.exports = usersResolvers;
+export default usersResolvers;

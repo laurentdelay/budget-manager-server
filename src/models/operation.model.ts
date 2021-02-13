@@ -1,4 +1,4 @@
-const { Schema, model, Types } = require("mongoose");
+import { Schema, model, Types } from "mongoose";
 
 const operationSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, default: new Types.ObjectId() },
@@ -12,4 +12,4 @@ const operationSchema = new Schema({
   type: String,
 });
 
-module.exports = model("Operation", operationSchema);
+export default model("Operation", operationSchema);
