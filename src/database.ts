@@ -1,12 +1,17 @@
-import mongoose from "mongoose";
+import { connect } from "mongoose";
 
-const MONGODB_URI: string =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/budget-manager";
+import { MONGODB_URI } from "./utils/envVars";
 
 export async function startDatabase(): Promise<void> {
-  await mongoose.connect(MONGODB_URI, {
+  if (MONGODB_URI == undefined || MONGODB_URI == "") {
+    throw new Error("Wrong database URI");
+  }
+
+  const mongoDB = await connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
+
+  mongoDB.connection;
 }
