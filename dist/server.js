@@ -17,9 +17,15 @@ const errorInterceptor_middleware_1 = require("./middlewares/errorInterceptor.mi
 const User_resolvers_1 = require("./resolvers/User.resolvers");
 const Category_resolvers_1 = require("./resolvers/Category.resolvers");
 const Event_resolvers_1 = require("./resolvers/Event.resolvers");
+const Goal_resolvers_1 = require("./resolvers/Goal.resolvers");
 const startServer = async (PORT) => {
     const schema = await type_graphql_1.buildSchema({
-        resolvers: [User_resolvers_1.UserResolvers, Category_resolvers_1.CategoryResolvers, Event_resolvers_1.EventResolvers],
+        resolvers: [
+            User_resolvers_1.UserResolvers,
+            Category_resolvers_1.CategoryResolvers,
+            Event_resolvers_1.EventResolvers,
+            Goal_resolvers_1.GoalResolvers,
+        ],
         emitSchemaFile: true,
         validate: {
             validationError: {

@@ -11,10 +11,16 @@ import { ErrorInterceptor } from "./middlewares/errorInterceptor.middleware";
 import { UserResolvers } from "./resolvers/User.resolvers";
 import { CategoryResolvers } from "./resolvers/Category.resolvers";
 import { EventResolvers } from "./resolvers/Event.resolvers";
+import { GoalResolvers } from "./resolvers/Goal.resolvers";
 
 export const startServer = async (PORT: string): Promise<void> => {
   const schema = await buildSchema({
-    resolvers: [UserResolvers, CategoryResolvers, EventResolvers],
+    resolvers: [
+      UserResolvers,
+      CategoryResolvers,
+      EventResolvers,
+      GoalResolvers,
+    ],
     emitSchemaFile: true,
     validate: {
       validationError: {

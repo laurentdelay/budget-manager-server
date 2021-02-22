@@ -47,6 +47,23 @@ input EventInput {
   recurrent: Boolean!
 }
 
+"""Goal Model"""
+type Goal {
+  _id: ID!
+  amount: Float
+  completed: Boolean!
+  completionDate: DateTime
+  createdAt: DateTime!
+  name: String!
+  totalSavings: Float!
+  userId: String!
+}
+
+input GoalInput {
+  amount: Float
+  name: String!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -56,10 +73,13 @@ type Mutation {
   addNewCategory(categoryInfo: CategoryInput!): Category!
   changePassword(userInput: ChangePasswordInput!): User!
   createEvent(eventInput: EventInput!): Event!
+  createGoal(goalInfo: GoalInput!): Goal!
   login(userInput: LoginInput!): User!
   register(userInput: RegisterInput!): User!
   removeCategory(id: String!): String
   removeEvent(eventId: String!): String!
+  removeGoal(goalId: String!): String!
+  updateGoal(goalId: String!, goalInfo: GoalInput!): Goal!
   updateInfo(userInput: PersonnalInfoInput!): User!
 }
 
@@ -79,6 +99,7 @@ enum Positivity {
 
 type Query {
   getCategories: [Category!]!
+  getGoals: [Goal!]!
   getUserEvents: [Event!]!
 }
 
