@@ -81,6 +81,7 @@ export class UserResolvers {
       username,
       firstName,
       lastName,
+      createdAt: new Date(),
     });
 
     await newUser.hashPassword(password);

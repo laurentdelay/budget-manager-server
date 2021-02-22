@@ -51,10 +51,16 @@ export class CategoryResolvers {
   }
 
   @Authorized()
-  @Mutation((_return) => Boolean, { nullable: true })
-  async removeCategory(@Arg("id") id: string): Promise<Boolean> {
+  @Mutation((_return) => String, { nullable: true })
+  async removeCategory(
+    @Arg("id") id: string,
+    @Ctx("user") user: Partial<User>
+  ) {
     try {
-      const result = await CategoryModel.deleteOne({ _id: id });
+      const result = await CategoryModel.deleteOne({
+        _id: id,
+        userId: user._id,
+      });
 
       if (result.ok == undefined) {
         throw new Error("Une erreur est survenue");
@@ -66,7 +72,7 @@ export class CategoryResolvers {
         );
       }
 
-      return true;
+      return "Delete success";
     } catch (err) {
       throw new Error(err);
     }

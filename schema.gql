@@ -27,6 +27,26 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+"""Event model"""
+type Event {
+  _id: ID!
+  amount: Float!
+  body: String!
+  categoryId: String!
+  createdAt: DateTime!
+  date: DateTime!
+  recurrent: Boolean!
+  userId: String!
+}
+
+input EventInput {
+  amount: Float!
+  body: String!
+  categoryId: String!
+  date: DateTime!
+  recurrent: Boolean!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -35,9 +55,11 @@ input LoginInput {
 type Mutation {
   addNewCategory(categoryInfo: CategoryInput!): Category!
   changePassword(userInput: ChangePasswordInput!): User!
+  createEvent(eventInput: EventInput!): Event!
   login(userInput: LoginInput!): User!
   register(userInput: RegisterInput!): User!
-  removeCategory(id: String!): Boolean
+  removeCategory(id: String!): String
+  removeEvent(eventId: String!): String!
   updateInfo(userInput: PersonnalInfoInput!): User!
 }
 
@@ -57,6 +79,7 @@ enum Positivity {
 
 type Query {
   getCategories: [Category!]!
+  getUserEvents: [Event!]!
 }
 
 input RegisterInput {

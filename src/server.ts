@@ -7,13 +7,14 @@ import { User } from "./entities/User";
 import { authCheck } from "./middlewares/authCheck.middleware";
 // Middlewares
 import { ErrorInterceptor } from "./middlewares/errorInterceptor.middleware";
-import { CategoryResolvers } from "./resolvers/Category.resolvers";
 //resolvers import
 import { UserResolvers } from "./resolvers/User.resolvers";
+import { CategoryResolvers } from "./resolvers/Category.resolvers";
+import { EventResolvers } from "./resolvers/Event.resolvers";
 
 export const startServer = async (PORT: string): Promise<void> => {
   const schema = await buildSchema({
-    resolvers: [UserResolvers, CategoryResolvers],
+    resolvers: [UserResolvers, CategoryResolvers, EventResolvers],
     emitSchemaFile: true,
     validate: {
       validationError: {
