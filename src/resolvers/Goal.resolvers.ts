@@ -94,4 +94,26 @@ export class GoalResolvers {
 
     return await goal.save();
   }
+
+  @Authorized()
+  @Mutation((_result) => Goal)
+  async completeGoal(
+    @Arg("goalId") goalId: string,
+    @Ctx("user") user: Partial<User>
+  ) {
+    const goal = await GoalModel.findOne({ _id: goalId, userId: user._id });
+
+    if (goal == null) {
+      throw new UserInputError("Goal Not Found", {
+        errors: {
+          goal: "Objectif introuvable",
+        },
+      });
+    }
+
+    goal.completed = true;
+    goal.completionDate = new Date();
+
+    return await goal.save();
+  }
 }
