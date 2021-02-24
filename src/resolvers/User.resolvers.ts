@@ -17,8 +17,10 @@ import {
   PersonnalInfoInput,
   RegisterInput,
 } from "./types/User.inputs";
+
 import { SECRET_KEY } from "../utils/envVars";
 import { DocumentType } from "@typegoose/typegoose";
+import { EventModel } from "../entities/Event";
 
 @Resolver((_of) => User)
 export class UserResolvers {
@@ -168,5 +170,18 @@ export class UserResolvers {
     );
 
     return token;
+  }
+
+  @FieldResolver()
+  async balance(@Root() { _id: userId }: DocumentType<User>) {
+    const events = await EventModel.find({ userId });
+
+    let balance = 0;
+
+    for (const event of events) {
+      balance += event.amount * event.action;
+    }
+
+    return balance;
   }
 }

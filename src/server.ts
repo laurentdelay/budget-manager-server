@@ -4,14 +4,17 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { startDatabase } from "./database";
 import { User } from "./entities/User";
-import { authCheck } from "./middlewares/authCheck.middleware";
+
 // Middlewares
+import { authCheck } from "./middlewares/authCheck.middleware";
 import { ErrorInterceptor } from "./middlewares/errorInterceptor.middleware";
+
 //resolvers import
 import { UserResolvers } from "./resolvers/User.resolvers";
 import { CategoryResolvers } from "./resolvers/Category.resolvers";
 import { EventResolvers } from "./resolvers/Event.resolvers";
 import { GoalResolvers } from "./resolvers/Goal.resolvers";
+import { SavingsResolvers } from "./resolvers/Savings.resolvers";
 
 export const startServer = async (PORT: string): Promise<void> => {
   const schema = await buildSchema({
@@ -20,6 +23,7 @@ export const startServer = async (PORT: string): Promise<void> => {
       CategoryResolvers,
       EventResolvers,
       GoalResolvers,
+      SavingsResolvers,
     ],
     emitSchemaFile: true,
     validate: {

@@ -3,6 +3,12 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""The action linked to an event"""
+enum Action {
+  ADD
+  SUBSTRACT
+}
+
 """Category model"""
 type Category {
   _id: ID!
@@ -30,16 +36,17 @@ scalar DateTime
 """Event model"""
 type Event {
   _id: ID!
+  action: Action!
   amount: Float!
   body: String!
-  categoryId: String!
+  category: Category!
   createdAt: DateTime!
   date: DateTime!
   recurrent: Boolean!
-  userId: String!
 }
 
 input EventInput {
+  action: Action!
   amount: Float!
   body: String!
   categoryId: String!
@@ -71,6 +78,7 @@ input LoginInput {
 
 type Mutation {
   addNewCategory(categoryInfo: CategoryInput!): Category!
+  addSavings(savingsInfo: SavingsInput!): Savings!
   changePassword(userInput: ChangePasswordInput!): User!
   completeGoal(goalId: String!): Goal!
   createEvent(eventInput: EventInput!): Event!
@@ -80,6 +88,7 @@ type Mutation {
   removeCategory(id: String!): String
   removeEvent(eventId: String!): String!
   removeGoal(goalId: String!): String!
+  removeSavings(savingsId: String!): String!
   updateGoal(goalId: String!, goalInfo: GoalInput!): Goal!
   updateInfo(userInput: PersonnalInfoInput!): User!
 }
@@ -90,7 +99,7 @@ input PersonnalInfoInput {
   username: String!
 }
 
-"""The effect of a catgory"""
+"""The effect of a category"""
 enum Positivity {
   """This let user choose the effect."""
   CHOICE
@@ -101,6 +110,8 @@ enum Positivity {
 type Query {
   getCategories: [Category!]!
   getGoals: [Goal!]!
+  getSavings: [Savings!]!
+  getSavingsByGoal(goalId: String!): [Savings!]!
   getUserEvents: [Event!]!
 }
 
@@ -113,9 +124,24 @@ input RegisterInput {
   username: String
 }
 
+"""Savings model"""
+type Savings {
+  _id: ID!
+  amount: Float!
+  createdAt: DateTime!
+  goal: Goal!
+  userId: String!
+}
+
+input SavingsInput {
+  amount: Float!
+  goalId: String!
+}
+
 """User model"""
 type User {
   _id: ID!
+  balance: Float!
   createdAt: DateTime!
   email: String!
   firstName: String!

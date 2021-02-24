@@ -17,9 +17,11 @@ export class Savings {
   @Property({ ref: User })
   userId: Ref<User>;
 
-  @Field((_type) => String)
   @Property({ ref: Goal })
   goalId: Ref<Goal>;
+
+  @Field((_type) => Goal)
+  goal: Goal;
 
   @Field((_type) => Date)
   @Property()

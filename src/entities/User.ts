@@ -2,7 +2,7 @@ import { getModelForClass, prop as Property } from "@typegoose/typegoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, Float, ID, ObjectType } from "type-graphql";
 import { SECRET_KEY } from "../utils/envVars";
 
 @ObjectType({ description: "User model" })
@@ -37,6 +37,16 @@ export class User {
   @Field()
   token: string;
 
+  @Field((_type) => Float)
+  balance: number;
+
+  get fullName(): string {
+    // gestion de l'espace entre les parties du nom
+    const space: string = this.firstName?.length > 0 ? " " : "";
+
+    return `${this.firstName ?? ""}${space}${this.lastName ?? ""}`;
+  }
+
   static decodeToken(token: string): Partial<User> {
     try {
       const user: Partial<User> = jwt.verify(
@@ -48,13 +58,6 @@ export class User {
     } catch (error) {
       throw new Error();
     }
-  }
-
-  get fullName(): string {
-    // gestion de l'espace entre les parties du nom
-    const space: string = this.firstName.length > 0 ? " " : "";
-
-    return `${this.firstName}${space}${this.lastName}`;
   }
 
   async checkPassword(password: string): Promise<boolean> {

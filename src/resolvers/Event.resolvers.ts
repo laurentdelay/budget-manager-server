@@ -1,4 +1,15 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { DocumentType } from "@typegoose/typegoose";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
+import { CategoryModel } from "../entities/Category";
 import { Event, EventModel } from "../entities/Event";
 import { User } from "../entities/User";
 import { EventInput } from "./types/Event.inputs";
@@ -61,5 +72,11 @@ export class EventResolvers {
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  @FieldResolver()
+  async category(@Root() event: DocumentType<Event>) {
+    const retrievedCategory = await CategoryModel.findById(event.categoryId);
+    return retrievedCategory;
   }
 }

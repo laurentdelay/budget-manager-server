@@ -1,5 +1,15 @@
+import { DocumentType } from "@typegoose/typegoose";
 import { UserInputError } from "apollo-server-express";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
 import { GoalModel } from "../entities/Goal";
 import { Savings, SavingsModel } from "../entities/Savings";
 import { User } from "../entities/User";
@@ -9,15 +19,17 @@ import { SavingsInput } from "./types/Savings.types";
 export class SavingsResolvers {
   @Authorized()
   @Query((_results) => [Savings])
-  async getSavings() {
-    return [];
+  async getSavings(@Ctx("user") user: Partial<User>) {
+    return await SavingsModel.find({ userId: user._id });
   }
 
   @Authorized()
   @Query((_results) => [Savings])
-  async getSavingsByGoal(@Arg("goalId") goalId: string) {
-    console.log(goalId);
-    return [];
+  async getSavingsByGoal(
+    @Arg("goalId") goalId: string,
+    @Ctx("user") user: Partial<User>
+  ) {
+    return await SavingsModel.find({ goalId, userId: user._id });
   }
 
   @Authorized()
@@ -42,6 +54,7 @@ export class SavingsResolvers {
 
     const newSavings = new SavingsModel({
       ...savingsInfo,
+      userId: user._id,
       createdAt: new Date(),
     });
 
@@ -68,5 +81,10 @@ export class SavingsResolvers {
     }
 
     return "Delete complete";
+  }
+
+  @FieldResolver()
+  async goal(@Root() savings: DocumentType<Savings>) {
+    return await GoalModel.findById(savings.goalId);
   }
 }

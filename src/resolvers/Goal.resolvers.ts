@@ -1,6 +1,17 @@
+import { DocumentType } from "@typegoose/typegoose";
 import { UserInputError } from "apollo-server-express";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
 import { Goal, GoalModel } from "../entities/Goal";
+import { SavingsModel } from "../entities/Savings";
 import { User } from "../entities/User";
 import { GoalInput } from "./types/Goal.inputs";
 
@@ -115,5 +126,15 @@ export class GoalResolvers {
     goal.completionDate = new Date();
 
     return await goal.save();
+  }
+
+  @FieldResolver((_type) => Number)
+  async totalSavings(@Root() goal: DocumentType<Goal>) {
+    const correspondingSavings = await SavingsModel.find({ goalId: goal._id });
+    let sum = 0;
+    for (const savings of correspondingSavings) {
+      sum += savings.amount;
+    }
+    return sum;
   }
 }

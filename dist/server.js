@@ -10,14 +10,15 @@ require("reflect-metadata");
 const type_graphql_1 = require("type-graphql");
 const database_1 = require("./database");
 const User_1 = require("./entities/User");
-const authCheck_middleware_1 = require("./middlewares/authCheck.middleware");
 // Middlewares
+const authCheck_middleware_1 = require("./middlewares/authCheck.middleware");
 const errorInterceptor_middleware_1 = require("./middlewares/errorInterceptor.middleware");
 //resolvers import
 const User_resolvers_1 = require("./resolvers/User.resolvers");
 const Category_resolvers_1 = require("./resolvers/Category.resolvers");
 const Event_resolvers_1 = require("./resolvers/Event.resolvers");
 const Goal_resolvers_1 = require("./resolvers/Goal.resolvers");
+const Savings_resolvers_1 = require("./resolvers/Savings.resolvers");
 const startServer = async (PORT) => {
     const schema = await type_graphql_1.buildSchema({
         resolvers: [
@@ -25,6 +26,7 @@ const startServer = async (PORT) => {
             Category_resolvers_1.CategoryResolvers,
             Event_resolvers_1.EventResolvers,
             Goal_resolvers_1.GoalResolvers,
+            Savings_resolvers_1.SavingsResolvers,
         ],
         emitSchemaFile: true,
         validate: {
