@@ -156,11 +156,15 @@ export class UserResolvers {
   }
 
   @FieldResolver()
-  token(@Root() { _id, email, createdAt }: DocumentType<User>) {
+  token(
+    @Root() { _id, email, username, fullName, createdAt }: DocumentType<User>
+  ) {
     const token = jwt.sign(
       {
         _id,
         email,
+        username,
+        fullName,
         createdAt,
       },
       SECRET_KEY,

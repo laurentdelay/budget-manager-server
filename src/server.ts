@@ -2,6 +2,7 @@ import { ApolloServer, ExpressContext } from "apollo-server-express";
 import Express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+
 import { startDatabase } from "./database";
 import { User } from "./entities/User";
 
@@ -54,7 +55,9 @@ export const startServer = async (PORT: string): Promise<void> => {
       return { user: null };
     },
   });
+
   const app = Express();
+
   server.applyMiddleware({ app });
 
   app.listen({ port: PORT }, () =>
