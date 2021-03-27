@@ -10,7 +10,7 @@ export class CategoryResolvers {
   @Query((_returns) => [Category])
   async getCategories(@Ctx("user") user: Partial<User>) {
     const categories = await CategoryModel.find({
-      $or: [{ userId: user._id }, { userId: undefined }],
+      $or: [{ userId: user.id }, { userId: undefined }],
     });
 
     return categories;
@@ -27,7 +27,7 @@ export class CategoryResolvers {
       $or: [
         {
           name: categoryInfo.name,
-          userId: user._id,
+          userId: user.id,
         },
         {
           name: categoryInfo.name,
@@ -44,7 +44,7 @@ export class CategoryResolvers {
 
     const newCategory = new CategoryModel({
       ...categoryInfo,
-      userId: user._id,
+      userId: user.id,
     });
 
     return await newCategory.save();
@@ -59,7 +59,7 @@ export class CategoryResolvers {
     try {
       const result = await CategoryModel.deleteOne({
         _id: id,
-        userId: user._id,
+        userId: user.id,
       });
 
       if (result.ok == undefined) {

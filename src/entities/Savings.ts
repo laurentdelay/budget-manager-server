@@ -7,7 +7,7 @@ import { User } from "./User";
 @ObjectType({ description: "Savings model" })
 export class Savings {
   @Field((_type) => ID)
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
 
   @Field((_type) => Float)
   @Property()

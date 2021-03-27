@@ -2,22 +2,18 @@ import { ApolloServer, ExpressContext } from "apollo-server-express";
 import Express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-
-import { startDatabase } from "./database";
 import { User } from "./entities/User";
-
 // Middlewares
 import { authCheck } from "./middlewares/authCheck.middleware";
 import { ErrorInterceptor } from "./middlewares/errorInterceptor.middleware";
-
-//resolvers import
-import { UserResolvers } from "./resolvers/User.resolvers";
 import { CategoryResolvers } from "./resolvers/Category.resolvers";
 import { EventResolvers } from "./resolvers/Event.resolvers";
 import { GoalResolvers } from "./resolvers/Goal.resolvers";
 import { SavingsResolvers } from "./resolvers/Savings.resolvers";
+//resolvers import
+import { UserResolvers } from "./resolvers/User.resolvers";
 
-export const startServer = async (PORT: string): Promise<void> => {
+export const createServer = async (): Promise<Express.Application> => {
   const schema = await buildSchema({
     resolvers: [
       UserResolvers,
@@ -36,8 +32,6 @@ export const startServer = async (PORT: string): Promise<void> => {
     globalMiddlewares: [ErrorInterceptor],
     authChecker: authCheck,
   });
-
-  await startDatabase();
 
   const server = new ApolloServer({
     schema,
@@ -60,9 +54,5 @@ export const startServer = async (PORT: string): Promise<void> => {
 
   server.applyMiddleware({ app });
 
-  app.listen({ port: PORT }, () =>
-    console.log(
-      `Server listening on http://localhost:${PORT}${server.graphqlPath}`
-    )
-  );
+  return app;
 };

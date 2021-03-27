@@ -32,7 +32,7 @@ export class UserResolvers {
     const user = await UserModel.findOne({ email });
 
     if (user == undefined) {
-      throw new UserInputError("Wrong email", {
+      throw new UserInputError("Unknown email", {
         errors: { email: "Aucun utilisateur trouvé pour cet email." },
       });
     }
@@ -60,7 +60,7 @@ export class UserResolvers {
   ) {
     // TODO: validation avec class-validator
     if (password != confirmPassword) {
-      throw new UserInputError("Input Error", {
+      throw new UserInputError("Input error", {
         errors: { confirmPassword: "Les mots de passe ne correspondent pas." },
       });
     }
@@ -105,8 +105,10 @@ export class UserResolvers {
     @Ctx("user") user: Partial<User>
   ) {
     if (newPassword != confirmNewPassword) {
-      throw new UserInputError("Input Error", {
-        errors: { confirmPassword: "Les mots de passe ne correspondent pas." },
+      throw new UserInputError("Input error", {
+        errors: {
+          confirmNewPassword: "Les mots de passe ne correspondent pas.",
+        },
       });
     }
 
@@ -118,7 +120,7 @@ export class UserResolvers {
 
     if (!(await dbUser.checkPassword(oldPassword))) {
       throw new UserInputError("Wrong password", {
-        errors: { password: "Le mot de passe ne correspond pas." },
+        errors: { oldPassword: "Le mot de passe ne correspond pas." },
       });
     }
 
@@ -157,11 +159,11 @@ export class UserResolvers {
 
   @FieldResolver()
   token(
-    @Root() { _id, email, username, fullName, createdAt }: DocumentType<User>
+    @Root() { id, email, username, fullName, createdAt }: DocumentType<User>
   ) {
     const token = jwt.sign(
       {
-        _id,
+        id,
         email,
         username,
         fullName,
@@ -177,7 +179,7 @@ export class UserResolvers {
   }
 
   @FieldResolver()
-  async balance(@Root() { _id: userId }: DocumentType<User>) {
+  async balance(@Root() { id: userId }: DocumentType<User>) {
     const events = await EventModel.find({ userId });
 
     let balance = 0;

@@ -44,10 +44,12 @@ export class RegisterInput extends LoginInput implements Partial<User> {
 export class ChangePasswordInput {
   @Field()
   @IsString()
+  @MinLength(1, { message: "Veuillez entrer votre ancien mot de passe" })
   oldPassword: string;
 
   @Field()
   @IsString()
+  @MinLength(1, { message: "Veuillez entrer un nouveau mot de passe" })
   newPassword: string;
 
   @Field()

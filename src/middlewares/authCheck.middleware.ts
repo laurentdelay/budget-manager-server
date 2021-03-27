@@ -1,4 +1,4 @@
-import { ForbiddenError } from "apollo-server-express";
+import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { AuthChecker } from "type-graphql";
 import { Context } from "../interfaces/Context.interface";
 
@@ -7,7 +7,7 @@ export const authCheck: AuthChecker<Context> = (
   roles = []
 ) => {
   if (user == null) {
-    throw new ForbiddenError(
+    throw new AuthenticationError(
       "You must be authenticated to perform this action"
     );
   }

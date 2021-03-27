@@ -20,7 +20,7 @@ export class SavingsResolvers {
   @Authorized()
   @Query((_results) => [Savings])
   async getSavings(@Ctx("user") user: Partial<User>) {
-    return await SavingsModel.find({ userId: user._id });
+    return await SavingsModel.find({ userId: user.id });
   }
 
   @Authorized()
@@ -29,7 +29,7 @@ export class SavingsResolvers {
     @Arg("goalId") goalId: string,
     @Ctx("user") user: Partial<User>
   ) {
-    return await SavingsModel.find({ goalId, userId: user._id });
+    return await SavingsModel.find({ goalId, userId: user.id });
   }
 
   @Authorized()
@@ -41,7 +41,7 @@ export class SavingsResolvers {
     // on vérifie que l'objectif existe
     const goal = await GoalModel.findOne({
       _id: savingsInfo.goalId,
-      userId: user._id,
+      userId: user.id,
     });
 
     if (goal == null) {
@@ -54,7 +54,7 @@ export class SavingsResolvers {
 
     const newSavings = new SavingsModel({
       ...savingsInfo,
-      userId: user._id,
+      userId: user.id,
       createdAt: new Date(),
     });
 
@@ -69,7 +69,7 @@ export class SavingsResolvers {
   ) {
     const result = await SavingsModel.deleteOne({
       _id: savingsId,
-      userId: user._id,
+      userId: user.id,
     });
 
     if (result.ok == undefined) {

@@ -20,7 +20,7 @@ export class GoalResolvers {
   @Authorized()
   @Query((_returns) => [Goal])
   async getGoals(@Ctx("user") user: Partial<User>) {
-    const goals = await GoalModel.find({ userId: user._id });
+    const goals = await GoalModel.find({ userId: user.id });
 
     return goals;
   }
@@ -33,7 +33,7 @@ export class GoalResolvers {
   ) {
     const existingGoal = await GoalModel.findOne({
       name: goalInfo.name,
-      userId: user._id,
+      userId: user.id,
     });
 
     if (existingGoal != null) {
@@ -46,7 +46,7 @@ export class GoalResolvers {
 
     const newGoal = new GoalModel({
       ...goalInfo,
-      userId: user._id,
+      userId: user.id,
       createdAt: new Date(),
     });
 
@@ -66,7 +66,7 @@ export class GoalResolvers {
     try {
       const result = await GoalModel.deleteOne({
         _id: goalId,
-        userId: user._id,
+        userId: user.id,
       });
 
       if (result.ok == undefined) {
@@ -90,7 +90,7 @@ export class GoalResolvers {
     @Arg("goalId") goalId: string,
     @Ctx("user") user: Partial<User>
   ) {
-    const goal = await GoalModel.findOne({ _id: goalId, userId: user._id });
+    const goal = await GoalModel.findOne({ _id: goalId, userId: user.id });
 
     if (goal == null) {
       throw new UserInputError("Goal Not Found", {
@@ -112,7 +112,7 @@ export class GoalResolvers {
     @Arg("goalId") goalId: string,
     @Ctx("user") user: Partial<User>
   ) {
-    const goal = await GoalModel.findOne({ _id: goalId, userId: user._id });
+    const goal = await GoalModel.findOne({ _id: goalId, userId: user.id });
 
     if (goal == null) {
       throw new UserInputError("Goal Not Found", {

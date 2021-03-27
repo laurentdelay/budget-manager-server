@@ -8,7 +8,7 @@ import { Action } from "./utils/Positivity.enum";
 @ObjectType({ description: "Event model" })
 export class Event {
   @Field((_type) => ID)
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
 
   @Field()
   @Property({})

@@ -8,7 +8,7 @@ import { SECRET_KEY } from "../utils/envVars";
 @ObjectType({ description: "User model" })
 export class User {
   @Field((_type) => ID)
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
 
   @Field()
   @Property()

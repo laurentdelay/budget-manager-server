@@ -20,7 +20,7 @@ export class EventResolvers {
   @Query((_returns) => [Event])
   async getUserEvents(@Ctx("user") user: Partial<User>) {
     try {
-      const events = await EventModel.find({ userId: user._id });
+      const events = await EventModel.find({ userId: user.id });
 
       return events;
     } catch (error) {
@@ -36,7 +36,7 @@ export class EventResolvers {
   ) {
     const newEvent = new EventModel({
       ...eventInput,
-      userId: user._id,
+      userId: user.id,
       createdAt: new Date(),
     });
     try {
@@ -55,7 +55,7 @@ export class EventResolvers {
     try {
       const result = await EventModel.deleteOne({
         _id: eventId,
-        userId: user._id,
+        userId: user.id,
       });
 
       if (result.ok == undefined) {

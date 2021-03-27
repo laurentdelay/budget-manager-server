@@ -6,7 +6,7 @@ import { User } from "./User";
 @ObjectType({ description: "Goal Model" })
 export class Goal {
   @Field((_type) => ID)
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
 
   @Field((_type) => Float, { nullable: true })
   @Property({ required: false })

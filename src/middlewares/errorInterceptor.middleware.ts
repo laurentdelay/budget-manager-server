@@ -16,7 +16,7 @@ export const ErrorInterceptor: MiddlewareFn<any> = async (_, next) => {
           [property]: Object.values(validationError.constraints)[0],
         };
       }
-      throw new UserInputError("Inputs error", { errors });
+      throw new UserInputError("Input error", { errors });
     }
 
     throw err;

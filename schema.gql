@@ -11,8 +11,8 @@ enum Action {
 
 """Category model"""
 type Category {
-  _id: ID!
   action: Positivity!
+  id: ID!
   name: String!
   userId: String
 }
@@ -35,13 +35,13 @@ scalar DateTime
 
 """Event model"""
 type Event {
-  _id: ID!
   action: Action!
   amount: Float!
   body: String!
   category: Category!
   createdAt: DateTime!
   date: DateTime!
+  id: ID!
   recurrent: Boolean!
 }
 
@@ -56,11 +56,11 @@ input EventInput {
 
 """Goal Model"""
 type Goal {
-  _id: ID!
   amount: Float
   completed: Boolean!
   completionDate: DateTime
   createdAt: DateTime!
+  id: ID!
   name: String!
   totalSavings: Float!
   userId: String!
@@ -126,10 +126,10 @@ input RegisterInput {
 
 """Savings model"""
 type Savings {
-  _id: ID!
   amount: Float!
   createdAt: DateTime!
   goal: Goal!
+  id: ID!
   userId: String!
 }
 
@@ -140,11 +140,11 @@ input SavingsInput {
 
 """User model"""
 type User {
-  _id: ID!
   balance: Float!
   createdAt: DateTime!
   email: String!
   firstName: String!
+  id: ID!
   lastName: String!
   password: String!
   token: String!

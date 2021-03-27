@@ -7,11 +7,9 @@ export async function startDatabase(): Promise<void> {
     throw new Error("Wrong database URI");
   }
 
-  const mongoDB = await connect(MONGODB_URI, {
+  await connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   });
-
-  mongoDB.connection;
 }

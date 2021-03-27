@@ -1,6 +1,13 @@
-import { startServer } from "./server";
+import { startDatabase } from "./database";
+import { createServer } from "./server";
 import { PORT } from "./utils/envVars";
 
-startServer(PORT).catch((error) => {
-  console.error(error.message);
-});
+const main = async () => {
+  await startDatabase();
+  const server = await createServer();
+  server.listen(PORT, () =>
+    console.log(`Server listening on http://localhost:${PORT}/graphql`)
+  );
+};
+
+main();

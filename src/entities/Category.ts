@@ -7,7 +7,7 @@ import { Positivity } from "./utils/Positivity.enum";
 @ObjectType({ description: "Category model" })
 export class Category {
   @Field((_type) => ID)
-  readonly _id: Types.ObjectId;
+  readonly id: Types.ObjectId;
 
   @Field()
   @Property()
