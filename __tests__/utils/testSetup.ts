@@ -2,14 +2,17 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-import { seeding } from "./seeds";
-import { SECRET_KEY } from "../src/utils/envVars";
+import { seeding } from "../seeds";
+import { SECRET_KEY } from "../../src/utils/envVars";
+import { User } from "../../src/entities/User";
+const users = require("../seeds/user.seeds.json");
 
 mongoose.Promise = Promise;
 
 type TestDBHelper = {
   server: MongoMemoryServer;
   authorizationHeader: string;
+  loggedUser: Partial<User>;
 
   startDB(dbName: string): Promise<void>;
   stopDB(): Promise<void>;
@@ -19,9 +22,11 @@ type TestDBHelper = {
 
 export class DBHelper implements TestDBHelper {
   server: MongoMemoryServer;
+  loggedUser: Partial<User>;
 
   constructor() {
     this.server = new MongoMemoryServer();
+    this.loggedUser = users[0];
   }
   async startDB(dbName: string): Promise<void> {
     const url = await this.server.getUri(dbName);
@@ -53,42 +58,6 @@ export class DBHelper implements TestDBHelper {
   }
 
   get authorizationHeader(): string {
-    return `Bearer ${jwt.sign(
-      {
-        createdAt: new Date(),
-        email: "test@mail.com",
-        username: "",
-        firstName: "Test",
-        lastName: "User",
-      },
-      SECRET_KEY
-    )}`;
+    return `Bearer ${jwt.sign(this.loggedUser, SECRET_KEY)}`;
   }
 }
-
-/* export const setupTestDB = () => {
-  beforeAll(async (done) => {
-    const mongoServer = new MongoMemoryServer();
-
-    const mongoUri = await mongoServer.getUri();
-
-    const mongooseOpts: ConnectionOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
-
-    mongoose.connection.once("open", () => {
-      console.log({ mongoUri });
-      done();
-    });
-    mongoose.connect(mongoUri, mongooseOpts);
-  });
-
-  afterAll(async (done) => {
-    await mongoose.connection.close(() => {
-      console.log("connexion closed");
-
-      done();
-    });
-  });
-}; */

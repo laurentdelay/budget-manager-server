@@ -56,25 +56,19 @@ export class CategoryResolvers {
     @Arg("id") id: string,
     @Ctx("user") user: Partial<User>
   ) {
-    try {
-      const result = await CategoryModel.deleteOne({
-        _id: id,
-        userId: user.id,
-      });
+    const result = await CategoryModel.deleteOne({
+      _id: id,
+      userId: user.id,
+    });
 
-      if (result.ok == undefined) {
-        throw new Error("Une erreur est survenue");
-      }
-
-      if (result.deletedCount == 0) {
-        throw new Error(
-          "Erreur lors de la suppression: catégorie introuvable."
-        );
-      }
-
-      return "Delete success";
-    } catch (err) {
-      throw new Error(err);
+    if (result.ok == undefined) {
+      throw new Error("Une erreur est survenue");
     }
+
+    if (result.deletedCount == 0) {
+      throw new Error("Erreur lors de la suppression: catégorie introuvable.");
+    }
+
+    return "Delete success";
   }
 }

@@ -18,7 +18,7 @@ export class Category {
   action: Positivity;
 
   @Field((_type) => String, { nullable: true })
-  @Property({ ref: User, required: true })
+  @Property({ ref: User, required: false })
   userId?: Ref<User>;
 }
 

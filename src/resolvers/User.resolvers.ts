@@ -88,13 +88,9 @@ export class UserResolvers {
 
     await newUser.hashPassword(password);
 
-    try {
-      const createdUser = await newUser.save();
+    const createdUser = await newUser.save();
 
-      return createdUser;
-    } catch (error) {
-      throw new Error(error);
-    }
+    return createdUser;
   }
 
   @Authorized()
@@ -126,13 +122,9 @@ export class UserResolvers {
 
     await dbUser.hashPassword(newPassword);
 
-    try {
-      await dbUser.save();
+    await dbUser.save();
 
-      return dbUser;
-    } catch (error) {
-      throw new Error(error);
-    }
+    return dbUser;
   }
 
   @Authorized()
@@ -141,20 +133,22 @@ export class UserResolvers {
     @Arg("userInput") { username, firstName, lastName }: PersonnalInfoInput,
     @Ctx("user") user: Partial<User>
   ) {
-    try {
-      const updatedUser = await UserModel.findOneAndUpdate(
-        { email: user.email },
-        { username, firstName, lastName }
-      );
+    const oldUser = await UserModel.findOneAndUpdate(
+      { email: user.email },
+      { username, firstName, lastName }
+    );
 
-      if (updatedUser == undefined) {
-        throw new Error("something went wrong : could not update user");
-      }
-
-      return updatedUser;
-    } catch (error) {
-      throw new Error(error);
+    if (oldUser == null) {
+      throw new Error("something went wrong : could not update user");
     }
+
+    const updatedUser = await UserModel.findOne({ email: user.email });
+
+    if (updatedUser == null) {
+      throw new Error("something went wrong : could not update user");
+    }
+
+    return updatedUser;
   }
 
   @FieldResolver()

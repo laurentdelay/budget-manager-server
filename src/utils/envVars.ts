@@ -1,4 +1,4 @@
-export const SECRET_KEY = process.env.SECRET_KEY ?? "";
+export const SECRET_KEY = process.env.SECRET_KEY ?? "defaultsecretkey";
 
 export const PORT = process.env.PORT ?? "5000";
 

@@ -1,6 +1,7 @@
 import supertest, { SuperTest, Test } from "supertest";
+import { User } from "../src/entities/User";
 import { createServer } from "../src/server";
-import { DBHelper } from "./testSetup";
+import { DBHelper } from "./utils/testSetup";
 
 let request: SuperTest<Test>;
 const userDBHelper = new DBHelper();
@@ -8,7 +9,6 @@ const userDBHelper = new DBHelper();
 describe("User resolvers", () => {
   beforeAll(async () => {
     await userDBHelper.startDB("userDB");
-    userDBHelper.seedDB();
     const userApp = await createServer();
 
     request = supertest(userApp);
@@ -214,7 +214,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const user = res.body.data.login;
+          const user: Partial<User> = res.body.data.login;
 
           expect(user).toBeDefined();
           expect(user).toHaveProperty("id");
@@ -248,38 +248,10 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const user = res.body.data.login;
+          const user: Partial<User> = res.body.data.login;
 
           expect(user.email).toBe(email);
 
-          done();
-        });
-    });
-
-    it("should send back a user with a hashed password", async (done) => {
-      const email = "test@mail.com";
-      const password = "password";
-
-      request
-        .post("/graphql")
-        .send({
-          query: `
-            mutation {
-                login(userInput: {email: "${email}", password: "${password}"}) {
-                    password
-                }
-            }
-        `,
-        })
-        .set("Accept", "application/json")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (err != null) return done(err);
-
-          const user = res.body.data.login;
-
-          expect(user.password).not.toBe(password);
           done();
         });
     });
@@ -305,9 +277,9 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const login = res.body.data.login;
+          const user: Partial<User> = res.body.data.login;
 
-          expect(login).toHaveProperty("token");
+          expect(user).toHaveProperty("token");
           done();
         });
     });
@@ -350,6 +322,7 @@ describe("User resolvers", () => {
           done();
         });
     });
+
     it("should send an error with missing password", async (done) => {
       const email = "test@mail.com";
       const password = "";
@@ -386,6 +359,7 @@ describe("User resolvers", () => {
           done();
         });
     });
+
     it("should send an error with passwords not matching", async (done) => {
       const email = "test@mail.com";
       const password = "password";
@@ -535,7 +509,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const newUser = res.body.data.register;
+          const newUser: Partial<User> = res.body.data.register;
 
           expect(newUser).not.toBeUndefined();
 
@@ -586,7 +560,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const newUser = res.body.data.register;
+          const newUser: Partial<User> = res.body.data.register;
 
           expect(newUser.email).toBe(email);
           expect(newUser.username).toBe(username);
@@ -623,7 +597,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const newUser = res.body.data.register;
+          const newUser: Partial<User> = res.body.data.register;
 
           expect(newUser.password).not.toBe(password);
           done();
@@ -656,7 +630,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const newUser = res.body.data.register;
+          const newUser: Partial<User> = res.body.data.register;
 
           expect(newUser).toHaveProperty("token");
 
@@ -690,7 +664,7 @@ describe("User resolvers", () => {
         .end((err, res) => {
           if (err != null) return done(err);
 
-          const newUser = res.body.data.register;
+          const newUser: Partial<User> = res.body.data.register;
 
           expect(newUser.balance).not.toBeUndefined();
 
@@ -896,7 +870,192 @@ describe("User resolvers", () => {
           done();
         });
     });
+
+    it("should send back a user with correct inputs", async (done) => {
+      const oldPassword = "password";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
+
+      request
+        .post("/graphql")
+        .set("Authorization", userDBHelper.authorizationHeader)
+        .send({
+          query: `
+          mutation {
+            changePassword(userInput: {
+              oldPassword: "${oldPassword}",
+              newPassword: "${newPassword}",
+              confirmNewPassword: "${confirmNewPassword}"
+            }) {
+              id
+              email
+            }
+          }
+        `,
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err != null) return done(err);
+
+          const user: Partial<User> = res.body.data.changePassword;
+
+          expect(user).not.toBeUndefined();
+          expect(user).toHaveProperty("email");
+          expect(user.email).toBe(userDBHelper.loggedUser.email);
+
+          done();
+        });
+    });
+
+    it("should send back a user with a hashed password", async (done) => {
+      const oldPassword = "password";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
+
+      request
+        .post("/graphql")
+        .set("Authorization", userDBHelper.authorizationHeader)
+        .send({
+          query: `
+          mutation {
+            changePassword(userInput: {
+              oldPassword: "${oldPassword}",
+              newPassword: "${newPassword}",
+              confirmNewPassword: "${confirmNewPassword}"
+            }) {
+              password
+            }
+          }
+        `,
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err != null) return done(err);
+
+          const user: Partial<User> = res.body.data.changePassword;
+
+          expect(user.password).not.toBe(newPassword);
+
+          done();
+        });
+    });
+
+    it("should send back a user with a changed password", async (done) => {
+      const oldPassword = "password";
+      const newPassword = "newPassword";
+      const confirmNewPassword = "newPassword";
+
+      request
+        .post("/graphql")
+        .set("Authorization", userDBHelper.authorizationHeader)
+        .send({
+          query: `
+          mutation {
+            changePassword(userInput: {
+              oldPassword: "${oldPassword}",
+              newPassword: "${newPassword}",
+              confirmNewPassword: "${confirmNewPassword}"
+            }) {
+              password
+            }
+          }
+        `,
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err != null) return done(err);
+
+          const user: Partial<User> = res.body.data.changePassword;
+
+          expect(user.password).not.toBe(userDBHelper.loggedUser.password);
+
+          done();
+        });
+    });
   });
 
-  describe("updateInfo", () => {});
+  describe("updateInfo", () => {
+    it("should throw an error if no user is authenticated", async (done) => {
+      const username = "Test_User";
+      const firstName = "John";
+      const lastName = "Doe";
+
+      request
+        .post("/graphql")
+        .send({
+          query: `
+          mutation {
+            updateInfo(userInput: {
+              username: "${username}",
+              firstName: "${firstName}",
+              lastName: "${lastName}",
+            }) {
+              id
+            }
+          }
+        `,
+        })
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err != null) return done(err);
+
+          expect(res.body.errors).not.toBeUndefined();
+
+          const error = res.body.errors[0];
+
+          expect(error.extensions.code).toBe("UNAUTHENTICATED");
+
+          done();
+        });
+    });
+
+    it("should send back a user with provided inputs", async (done) => {
+      const username = "Test_User";
+      const firstName = "John";
+      const lastName = "Doe";
+
+      request
+        .post("/graphql")
+        .send({
+          query: `
+          mutation {
+            updateInfo(userInput: {
+              username: "${username}",
+              firstName: "${firstName}",
+              lastName: "${lastName}",
+            }) {
+              id
+              username
+              firstName
+              lastName
+            }
+          }
+        `,
+        })
+        .set("Authorization", userDBHelper.authorizationHeader)
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err != null) return done(err);
+          const updatedUser: Partial<User> = res.body.data.updateInfo;
+
+          expect(updatedUser).not.toBeUndefined();
+
+          expect(updatedUser.username).toBe(username);
+          expect(updatedUser.firstName).toBe(firstName);
+          expect(updatedUser.lastName).toBe(lastName);
+
+          done();
+        });
+    });
+  });
 });

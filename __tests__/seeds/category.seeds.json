@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "6029499e0f45d123649da0f8",
+    "name": "Default Category 1",
+    "action": 0,
+    "userId": null
+  },
+  {
+    "_id": "6029499e0f45d123649da0f9",
+    "name": "Default Category 1",
+    "action": 0,
+    "userId": null
+  },
+  {
+    "_id": "6029499e0f45d123649da0e8",
+    "name": "TestUserCat1",
+    "action": 0,
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6029499e0f45d123649da0e9",
+    "name": "TestUserCat2",
+    "action": 0,
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6029499e0f45d123649da0e0",
+    "name": "TestUserCat3",
+    "action": 0,
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6029499e0f45d123649da0ea",
+    "name": "AdminCat1",
+    "action": 0,
+    "userId": "602949ab0f45d123649da0f9"
+  },
+  {
+    "_id": "6029499e0f45d123649da0eb",
+    "name": "AdminCat2",
+    "action": 0,
+    "userId": "602949ab0f45d123649da0f9"
+  }
+]
