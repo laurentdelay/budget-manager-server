@@ -26,6 +26,6 @@ export const seeding = async () => {
 
     const fileContent = require(path.join(__dirname, file));
 
-    mongoModel.insertMany(fileContent);
+    await mongoModel.insertMany(fileContent);
   }
 };

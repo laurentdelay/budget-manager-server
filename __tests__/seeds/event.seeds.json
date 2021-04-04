@@ -1,0 +1,60 @@
+[
+  {
+    "_id": "6033ac7f23f8845e54268ec9",
+    "date": "2021-02-22T13:01:34.864Z",
+    "action": -1,
+    "body": "TestEvent1",
+    "amount": 150,
+    "categoryId": "6029499e0f45d123649da0e8",
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6033b21211cc4b0360b44f8f",
+    "date": "2021-02-28T00:00:00Z",
+    "action": 1,
+    "body": "TestEvent2",
+    "amount": 1000,
+    "categoryId": "6029499e0f45d123649da0e8",
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6033d2c024b35e4cf0df847e",
+    "createdAt": "2021-02-22T15:49:17.349Z",
+    "action": 1,
+    "body": "TestEvent3",
+    "amount": 50,
+    "date": "2021-02-28T00:00:00Z",
+    "categoryId": "6029499e0f45d123649da0e8",
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6033d32624b35e4cf0df847f",
+    "createdAt": "2021-02-22T15:49:17.349Z",
+    "action": 1,
+    "body": "TestEvent4",
+    "amount": 120,
+    "date": "2021-02-28T00:00:00Z",
+    "categoryId": "6029499e0f45d123649da0f9",
+    "userId": "6029499e0f45d123649da0f8"
+  },
+  {
+    "_id": "6036588007c1bc56f062ec9f",
+    "action": 1,
+    "createdAt": "2021-02-24T13:45:36.836Z",
+    "body": "AdminEvent1",
+    "amount": 12,
+    "date": "2021-02-22T00:00:00Z",
+    "categoryId": "6029499e0f45d123649da0ea",
+    "userId": "602949ab0f45d123649da0f9"
+  },
+  {
+    "_id": "60365be39eaf7d553c7388e1",
+    "action": -1,
+    "createdAt": "2021-02-24T14:00:03.544Z",
+    "body": "AdminEvent2",
+    "amount": 50,
+    "date": "2021-02-22T00:00:00Z",
+    "categoryId": "6029499e0f45d123649da0ea",
+    "userId": "602949ab0f45d123649da0f9"
+  }
+]

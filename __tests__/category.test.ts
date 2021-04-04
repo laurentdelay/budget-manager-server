@@ -349,7 +349,7 @@ describe("Category resolvers", () => {
         });
     });
 
-    it("should send back the newly created category for existing other user catergory name", async (done) => {
+    it("should send back the newly created category for existing other user category name", async (done) => {
       const name: string = "AdminCat1";
       const action = "CHOICE";
 

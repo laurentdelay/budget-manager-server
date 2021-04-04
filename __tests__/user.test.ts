@@ -25,6 +25,7 @@ describe("User resolvers", () => {
   afterEach(async () => {
     await userDBHelper.cleanUpDB();
   });
+
   describe("login", () => {
     it("should send an error with missing email", async (done) => {
       const email = "";
@@ -238,7 +239,8 @@ describe("User resolvers", () => {
             mutation {
                 login(userInput: {email: "${email}", password: "${password}"}) {
                     email
-                    }
+                    balance
+                   }
             }
         `,
         })
@@ -251,7 +253,6 @@ describe("User resolvers", () => {
           const user: Partial<User> = res.body.data.login;
 
           expect(user.email).toBe(email);
-
           done();
         });
     });

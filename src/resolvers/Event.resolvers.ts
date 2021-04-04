@@ -19,13 +19,9 @@ export class EventResolvers {
   @Authorized()
   @Query((_returns) => [Event])
   async getUserEvents(@Ctx("user") user: Partial<User>) {
-    try {
-      const events = await EventModel.find({ userId: user.id });
+    const events = await EventModel.find({ userId: user.id });
 
-      return events;
-    } catch (error) {
-      throw new Error(error);
-    }
+    return events;
   }
 
   @Authorized()
@@ -39,11 +35,7 @@ export class EventResolvers {
       userId: user.id,
       createdAt: new Date(),
     });
-    try {
-      return await newEvent.save();
-    } catch (error) {
-      throw new Error(error);
-    }
+    return await newEvent.save();
   }
 
   @Authorized()

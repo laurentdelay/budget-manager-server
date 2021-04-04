@@ -43,6 +43,7 @@ type Event {
   date: DateTime!
   id: ID!
   recurrent: Boolean!
+  userId: ID!
 }
 
 input EventInput {

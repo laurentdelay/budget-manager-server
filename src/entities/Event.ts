@@ -30,6 +30,7 @@ export class Event {
   @Property({ default: Action.ADD })
   action: Action;
 
+  @Field((_type) => ID)
   @Property({ ref: User, required: true })
   userId: Ref<User>;
 
